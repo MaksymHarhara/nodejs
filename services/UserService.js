@@ -1,26 +1,9 @@
 let userList = require("../db/UsersList");
+const db = require('../db/db')
+const {json} = require("express");
 
-const getUser = (userId) => {
-  const user = userList.find(({ id }) => id === parseInt(userId));
-  return user;
-};
-
-const getUsers = () => {
-  return userList;
-};
-
-const createUser = (login, password) => {
-  const newUser = {
-    id: userList.length + 1,
-    login: login,
-    password: password,
-    age: req.body.age,
-    isDeleted: false,
-  };
-
-  userList.push(newUser);
-
-  return newUser;
+const createUser = (login, password, age) => {
+  db.query("INSERT INTO users (login, password, age) values ($1, $2, $3) RETURNING *", [login, password, age])
 };
 
 const deleteUser = (user) => {
@@ -61,11 +44,7 @@ const getAutoSuggestUsers = (loginSubstring, limit) => {
 };
 
 module.exports = {
-  getUser,
-  getUsers,
   createUser,
   deleteUser,
-  updateUser,
-  removeUser,
   getAutoSuggestUsers,
 };

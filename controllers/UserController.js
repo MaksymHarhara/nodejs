@@ -1,37 +1,40 @@
 const UserService = require("../services/UserService");
+const db = require("../db/db");
 
 const getUsers = (req, res) => {
-  const userList = UserService.getUsers();
-  res.send(userList);
+  const userList = db.query("SELECT * FROM users");
+  res.json(userList.rows);
 };
 
 const getUser = (req, res) => {
-  const user = UserService.getUser(req.params.id);
+  const id = req.params.id;
+  const user = db.query("SELECT * FROM users where id = $1", [id]);
 
   if (!user) {
     return res.status(404).send("The course with the given ID was not found");
   }
 
-  res.send(user);
+  res.json(user.rows[0]);
 };
 
 const createUser = (req, res) => {
-  const newUser = UserService.createUser(req.body.login, req.body.password);
-  res.send(newUser);
+  UserService.createUser(req.body.login, req.body.password, req.body.age);
+  res.send("success");
 };
 
 const updateUser = (req, res) => {
-  const newUser = req.body;
-  UserService.updateUser(newUser);
-  res.json(newUser);
+  const {id, login, password, age} = req.body;
+  const user = db.query(
+      "UPDATE users set login = $1, password = $2, age = $3 where id = $4 RETURNING *",
+      [login, password, age, id]
+  )
+  res.json(user);
 };
 
 const deleteUser = (req, res) => {
-  const user = {
-    id: req.params.id,
-  };
+  const id = req.params.id
+  const user = db.query("DELETE FROM users where id = $1", [id]);
 
-  UserService.deleteUser(user);
   res.json(user);
 };
 
