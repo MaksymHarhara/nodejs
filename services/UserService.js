@@ -2,8 +2,8 @@ let userList = require("../db/UsersList");
 const db = require('../db/db')
 const {json} = require("express");
 
-const createUser = (login, password, age) => {
-  db.query("INSERT INTO users (login, password, age) values ($1, $2, $3) RETURNING *", [login, password, age])
+const createUser = async (login, password, age) => {
+  await db.query("INSERT INTO users (login, password, age) values ($1, $2, $3) RETURNING *", [login, password, age])
 };
 
 const deleteUser = (user) => {
