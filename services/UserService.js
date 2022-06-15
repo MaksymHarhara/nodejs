@@ -1,32 +1,29 @@
-let userList = require("../db/UsersList");
 const db = require('../db/db')
 const {json} = require("express");
+const  usersDAO = require('../dao/users')
 
-const createUser = async (login, password, age) => {
-  await db.query("INSERT INTO users (login, password, age) values ($1, $2, $3) RETURNING *", [login, password, age])
+const createUser = async (usersDto) => {
+  const {login, password, age} = usersDto;
+  await usersDAO.createUsers(login, password, age);
+}
+
+const deleteUser = async (usersDto) => {
+  await usersDAO.deleteUsers(usersDto);
 };
 
-const deleteUser = (user) => {
-  if (!user) return;
-  const deletedUser = userList.find((item) => item && item.id === user.id);
-  if (!deletedUser) return;
-  deletedUser.isDeleted = true;
-};
+const updateUser = async (usersDto) => {
+  const {id, login, password, age} = usersDto;
+  await usersDAO.updateUsers(id, login, password, age);
+}
 
-const updateUser = (newUser) => {
-  removeUser(newUser);
-  userList.push(newUser);
-};
+const getAllUsers = async () => {
+  await usersDAO.getAllUsers();
+}
 
-const removeUser = (newUser) => {
-  if (!newUser) return;
-  const userIndex = userList.findIndex(
-    (user) => user && user.id === newUser.id
-  );
-  if (userIndex < 0) return;
-  userList = userList.filter((user) => user && user.id === newUser.id);
-};
-
+const getUser = async (userDto) => {
+  await usersDAO.getUser(userDto);
+}
+/*
 const getAutoSuggestUsers = (loginSubstring, limit) => {
   const filteredUsers = userList
     .sort((a, b) => {
@@ -42,9 +39,12 @@ const getAutoSuggestUsers = (loginSubstring, limit) => {
 
   return [];
 };
-
+*/
 module.exports = {
+  getUser,
+  getAllUsers,
+  updateUser,
   createUser,
   deleteUser,
-  getAutoSuggestUsers,
+ // getAutoSuggestUsers,
 };

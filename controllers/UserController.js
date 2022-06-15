@@ -1,43 +1,55 @@
 const UserService = require("../services/UserService");
-const db = require("../db/db");
 
 const getUsers = async (req, res) => {
-  const userList = await db.query("SELECT * FROM users");
-  res.json(userList.rows);
+  try {
+    const users = await UserService.getAllUsers();
+    res.status(200).json(users.rows);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json('something went wrong');
+  }
 };
 
 const getUser = async (req, res) => {
-  const id = req.params.id;
-  const user = await db.query("SELECT * FROM users where id = $1", [id]);
-
-  if (!user) {
-    return res.status(404).send("The course with the given ID was not found");
+  try {
+    const user =  await UserService.getUser(req.params.id);
+    res.status(200).json(user.rows);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json('something went wrong');
   }
-
-  res.json(user.rows);
 };
 
 const createUser = async (req, res) => {
-  await UserService.createUser(req.body.login, req.body.password, req.body.age);
-  res.send("success");
-};
+  try {
+    const  id = await UserService.createUser(req.body);
+    res.status(201).json(id);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json('something went wrong');
+  }
+}
 
 const updateUser = async (req, res) => {
-  const {id, login, password, age} = req.body;
-  const user = await db.query(
-      "UPDATE users set login = $1, password = $2, age = $3 where id = $4 RETURNING *",
-      [login, password, age, id]
-  )
-  res.json(user);
+  try {
+    await UserService.updateUser(req.body);
+    res.status(200);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json('smth went wrong');
+  }
 };
 
 const deleteUser = async (req, res) => {
-  const id = req.params.id
-  const user = await db.query("DELETE FROM users where id = $1", [id]);
-
-  res.json(user);
+  try {
+    await UserService.deleteUser(req.params.id);
+    res.status(200)
+  } catch (err) {
+    console.error(err);
+    res.status(500).json('smth went wrong during delete');
+  }
 };
-
+/*
 const getAutoSuggestUsers = (req, res) => {
   try {
     const { login: loginSubstring, limit } = req.query;
@@ -53,12 +65,12 @@ const getAutoSuggestUsers = (req, res) => {
     res.sendStatus(500);
   }
 };
-
+*/
 module.exports = {
   getUsers,
   getUser,
   createUser,
   updateUser,
   deleteUser,
-  getAutoSuggestUsers,
+ // getAutoSuggestUsers,
 };
