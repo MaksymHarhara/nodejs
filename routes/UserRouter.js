@@ -7,7 +7,7 @@ const {
   createUser,
   deleteUser,
   updateUser,
-  getAutoSuggestUsers,
+ // getAutoSuggestUsers,
 } = require("../controllers/UserController");
 
 const router = Router();
@@ -20,11 +20,11 @@ router.post("/createUser", validate(validateSchemas.createUser), createUser);
 
 router.put("/updateUser/:id", validate(validateSchemas.updateUser), updateUser);
 
-router.get(
+/*router.get(
   "/getAutoSuggestUsers",
   validate(validateSchemas.getAutoSuggestUsers),
   getAutoSuggestUsers
-);
+);*/
 
 router.delete(
   "/deleteUser/:id",

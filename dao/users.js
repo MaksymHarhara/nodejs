@@ -2,22 +2,21 @@ const db = require('../db/db');
 
 class UsersDAO {
     async createUsers (login, password, age) {
-        const [id] = await db('users').insert({
+        return db('users').insert({
             login: login,
             password: password,
             age: age,
-        })
-            .returning('id');
-
-        return id;
+        }).returning('id');
     }
 
     async updateUsers (id, login, password, age) {
-        await db('users').where('id', id).update({login: login, password: password, age: age})
+        await db('users').update({login: login, password: password, age: age}).whereRaw('id = ?', [id]);
+        return db('users').select('*').where('id', id);
     }
 
     async deleteUsers (id) {
-        await db('users').where('id', id).update({is_deleted: true})
+        await db('users').update({is_deleted: true}).where('id', id);
+        return db('users').select('*').where('id', id);
     }
 
     async getAllUsers() {

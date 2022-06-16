@@ -4,24 +4,24 @@ const  usersDAO = require('../dao/users')
 
 const createUser = async (usersDto) => {
   const {login, password, age} = usersDto;
-  await usersDAO.createUsers(login, password, age);
+  return await usersDAO.createUsers(login, password, age);
 }
 
 const deleteUser = async (usersDto) => {
-  await usersDAO.deleteUsers(usersDto);
+  return await usersDAO.deleteUsers(usersDto);
 };
 
-const updateUser = async (usersDto) => {
-  const {id, login, password, age} = usersDto;
-  await usersDAO.updateUsers(id, login, password, age);
+const updateUser = async (userId, usersDto) => {
+  const {login, password, age} = usersDto;
+  return await usersDAO.updateUsers(userId, login, password, age);
 }
 
 const getAllUsers = async () => {
-  await usersDAO.getAllUsers();
+  return await usersDAO.getAllUsers();
 }
 
 const getUser = async (userDto) => {
-  await usersDAO.getUser(userDto);
+  return await usersDAO.getUser(userDto);
 }
 /*
 const getAutoSuggestUsers = (loginSubstring, limit) => {
