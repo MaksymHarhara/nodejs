@@ -1,5 +1,3 @@
-const db = require('../db/db')
-const {json} = require("express");
 const  usersDAO = require('../dao/users')
 
 const createUser = async (usersDto) => {

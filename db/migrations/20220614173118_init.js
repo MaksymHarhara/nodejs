@@ -16,6 +16,18 @@ exports.up = function(knex) {
  * @param { import("knex").Knex } knex
  * @returns {Knex.SchemaBuilder}
  */
+exports.up = function(knex) {
+    return knex.schema.createTable('group', table => {
+        table.increments('id').primary();
+        table.string('name', 255).notNullable();
+        table.specificType('permissions', 'STRING[]')
+    });
+};
+
+/**
+ * @param { import("knex").Knex } knex
+ * @returns {Knex.SchemaBuilder}
+ */
 exports.down = function(knex) {
     return knex.schema.dropTable('users');
 };
