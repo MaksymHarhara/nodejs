@@ -49,28 +49,11 @@ const deleteUser = async (req, res) => {
     res.status(500).json('smth went wrong during delete');
   }
 };
-/*
-const getAutoSuggestUsers = (req, res) => {
-  try {
-    const { login: loginSubstring, limit } = req.query;
-    const result = UserService.getAutoSuggestUsers(loginSubstring, limit);
 
-    if (!result.length) {
-      res.sendStatus(404);
-    }
-
-    res.send(result);
-  } catch (error) {
-    console.error(error);
-    res.sendStatus(500);
-  }
-};
-*/
 module.exports = {
   getUsers,
   getUser,
   createUser,
   updateUser,
-  deleteUser,
- // getAutoSuggestUsers,
+  deleteUser
 };

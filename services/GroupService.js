@@ -1,25 +1,38 @@
-const  groupDAO = require('../dao/group')
+const db = require("../models/main");
 
-const createGroup = async (groupDto) => {
-    const {name, permissions} = groupDto;
-    return await groupDAO.createGroup(name, permissions);
+const Groups = db.groups;
+
+const getAllGroups = () => {
+    return Groups.findAll()
 }
 
-const deleteGroup = async (groupDto) => {
-    return await groupDAO.deleteGroup(groupDto);
-};
-
-const updateGroup = async (groupId, groupDto) => {
-    const {name, permissions} = groupDto;
-    return await groupDAO.updateGroup(groupId, name, permissions);
+const getGroup = (id) => {
+    return Groups.findByPk(id)
 }
 
-const getAllGroups = async () => {
-    return await groupDAO.getGroups();
+const createGroup = (body) => {
+    const group = {
+        group_name: body.groupName,
+        roles: body.roles
+    };
+    return Groups.create(group)
 }
 
-const getGroup = async (groupDto) => {
-    return await groupDAO.getGroup(groupDto);
+const updateGroup = (id, body) => {
+    const updatedGroup = {
+        group_name: body.groupName,
+        roles: body.roles
+    }
+
+    return Groups.update(updatedGroup, {
+        where: { id: id }
+    })
+}
+
+const deleteGroup = (id) => {
+    return Groups.destroy({
+        where: { id: id }
+    })
 }
 
 module.exports = {
