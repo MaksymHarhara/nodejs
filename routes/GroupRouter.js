@@ -1,6 +1,7 @@
 const { Router } = require("express");
 const validate = require("express-joi-validate");
 const { validateSchemas } = require("../schema/Validation");
+const tokenCheck = require("../middlewares/auth.js");
 const {
     getGroup,
     getGroups,
@@ -11,13 +12,13 @@ const {
 
 const router = Router();
 
-router.get("/getGroup", getGroups);
+router.get("/getGroup", tokenCheck, getGroups);
 
-router.get("/getGroup/:id", getGroup);
+router.get("/getGroup/:id", tokenCheck, getGroup);
 
-router.post("/createGroup", createGroup);
+router.post("/createGroup", tokenCheck, createGroup);
 
-router.put("/updateGroup/:id", updateGroup);
+router.put("/updateGroup/:id", tokenCheck, updateGroup);
 
 router.delete(
     "/deleteGroup/:id",

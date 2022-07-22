@@ -1,6 +1,7 @@
 const { Router } = require("express");
 const validate = require("express-joi-validate");
 const { validateSchemas } = require("../schema/Validation");
+const { tokenCheck } = require("../middlewares/auth.js");
 const {
   getUser,
   getUsers,
@@ -11,16 +12,16 @@ const {
 
 const router = Router();
 
-router.get("/getUsers", getUsers);
+router.get("/getUsers", tokenCheck, getUsers);
 
-router.get("/getUser/:id", validate(validateSchemas.getUserById), getUser);
+router.get("/getUser/:id", tokenCheck, validate(validateSchemas.getUserById), getUser);
 
-router.post("/createUser", validate(validateSchemas.createUser), createUser);
+router.post("/createUser", tokenCheck, validate(validateSchemas.createUser), createUser);
 
-router.put("/updateUser/:id", validate(validateSchemas.updateUser), updateUser);
+router.put("/updateUser/:id", tokenCheck, validate(validateSchemas.updateUser), updateUser);
 
 router.delete(
-  "/deleteUser/:id",
+  "/deleteUser/:id", tokenCheck,
   validate(validateSchemas.deleteUser),
   deleteUser
 );
