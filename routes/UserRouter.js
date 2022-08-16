@@ -1,35 +1,29 @@
 const { Router } = require("express");
 const validate = require("express-joi-validate");
 const { validateSchemas } = require("../schema/Validation");
+const tokenCheck = require("../middlewares/auth.js");
 const {
   getUser,
   getUsers,
   createUser,
   deleteUser,
-  updateUser,
-  getAutoSuggestUsers,
+  updateUser
 } = require("../controllers/UserController");
 
-const router = Router();
+const UserRouter = Router();
 
-router.get("/getUsers", getUsers);
+UserRouter.get("/getUsers", tokenCheck, getUsers);
 
-router.get("/getUser/:id", validate(validateSchemas.getUserById), getUser);
+UserRouter.get("/getUser/:id", tokenCheck, validate(validateSchemas.getUserById), getUser);
 
-router.post("/createUser", validate(validateSchemas.createUser), createUser);
+UserRouter.post("/createUser", tokenCheck, validate(validateSchemas.createUser), createUser);
 
-router.put("/updateUser/:id", validate(validateSchemas.updateUser), updateUser);
+UserRouter.put("/updateUser/:id", tokenCheck, validate(validateSchemas.updateUser), updateUser);
 
-router.get(
-  "/getAutoSuggestUsers",
-  validate(validateSchemas.getAutoSuggestUsers),
-  getAutoSuggestUsers
-);
-
-router.delete(
-  "/deleteUser/:id",
+UserRouter.delete(
+  "/deleteUser/:id", tokenCheck,
   validate(validateSchemas.deleteUser),
   deleteUser
 );
 
-module.exports = router;
+module.exports = UserRouter;

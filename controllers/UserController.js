@@ -1,53 +1,52 @@
 const UserService = require("../services/UserService");
 
-const getUsers = (req, res) => {
-  const userList = UserService.getUsers();
-  res.send(userList);
-};
-
-const getUser = (req, res) => {
-  const user = UserService.getUser(req.params.id);
-
-  if (!user) {
-    return res.status(404).send("The course with the given ID was not found");
-  }
-
-  res.send(user);
-};
-
-const createUser = (req, res) => {
-  const newUser = UserService.createUser(req.body.login, req.body.password);
-  res.send(newUser);
-};
-
-const updateUser = (req, res) => {
-  const newUser = req.body;
-  UserService.updateUser(newUser);
-  res.json(newUser);
-};
-
-const deleteUser = (req, res) => {
-  const user = {
-    id: req.params.id,
-  };
-
-  UserService.deleteUser(user);
-  res.json(user);
-};
-
-const getAutoSuggestUsers = (req, res) => {
+const getUsers = async (req, res) => {
   try {
-    const { login: loginSubstring, limit } = req.query;
-    const result = UserService.getAutoSuggestUsers(loginSubstring, limit);
+    const users = await UserService.getAllUsers();
+    res.status(200).json(users);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json('something went wrong');
+  }
+};
 
-    if (!result.length) {
-      res.sendStatus(404);
-    }
+const getUser = async (req, res) => {
+  try {
+    const user =  await UserService.getUser(req.params.id);
+    res.status(200).json(user);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json('something went wrong');
+  }
+};
 
-    res.send(result);
+const createUser = async (req, res) => {
+  try {
+    const  id = await UserService.createUser(req.body);
+    res.status(201).json(id);
   } catch (error) {
     console.error(error);
-    res.sendStatus(500);
+    res.status(500).json('something went wrong');
+  }
+}
+
+const updateUser = async (req, res) => {
+  try {
+    const user = await UserService.updateUser(req.params.id, req.body);
+    res.status(200).json(user);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json('smth went wrong');
+  }
+};
+
+const deleteUser = async (req, res) => {
+  try {
+    const user = await UserService.deleteUser(req.params.id);
+    res.status(200).json(user);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json('smth went wrong during delete');
   }
 };
 
@@ -56,6 +55,5 @@ module.exports = {
   getUser,
   createUser,
   updateUser,
-  deleteUser,
-  getAutoSuggestUsers,
+  deleteUser
 };
