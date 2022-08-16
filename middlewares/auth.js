@@ -1,17 +1,23 @@
 const jwt = require("jsonwebtoken");
 
 const tokenCheck = (req, res, next) => {
-    let token = req.headers['token'];
-    console.log(req.headers)
+    if(req.method === "OPTIONS"){
+        next()
+    }
+
+    const token = req.headers?.authorization?.split(' ')[1];
 
     if (token) {
-        jwt.verify(token, 'secret', function(err, decoded) {
-            if (err) {
-                throw new Error(err);
-            } else {
-                next()
-            }
-        })
+        try {
+            const decodedData = jwt.verify(token, "secret")
+            req.user = decodedData;
+            next()
+        } catch (err) {
+            res.status(404).json({
+                code: 403,
+                message: "Forbidden error"
+            });
+        }
     } else {
         res.status(401).json({
             code: 401,
